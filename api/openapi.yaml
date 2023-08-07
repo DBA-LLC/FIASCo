@@ -1,0 +1,2167 @@
+openapi: 3.0.1
+info:
+  title: SPAS API
+  version: "2.0"
+servers:
+- url: /
+paths:
+  /api/spas/v2.0/GetRegions:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressesResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Получить список регионов
+      tags:
+      - AddressInfo
+  /api/spas/v2.0/GetAddressItems:
+    post:
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/FilterObject'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FilterObject'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/FilterObject'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/FilterObject'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressesResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: "Получить список дочерних элементов, соответствующих заданным фильт\
+        рам"
+      tags:
+      - AddressInfo
+  /api/spas/v2.0/GetDetails:
+    get:
+      parameters:
+      - description: Идентификатор адресного элемента
+        explode: true
+        in: query
+        name: object_id
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressDetailsResult'
+          description: Success
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Получить дополнительную информацию для заданного адресного элемента
+      tags:
+      - AddressInfo
+  /api/spas/v2.0/IsDescendant:
+    get:
+      parameters:
+      - description: Идентификатор родительского элемента
+        explode: true
+        in: query
+        name: ancestor
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: Идентификатор дочернего элемента
+        explode: true
+        in: query
+        name: descendant
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: "Вид представления адреса: 1 - административное деление 2 - м\
+          униципальное деление"
+        explode: true
+        in: query
+        name: address_type
+        required: false
+        schema:
+          $ref: '#/components/schemas/AddressType'
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: "Проверка, является ли элемент ancestor родительским элементом в ие\
+        рархии для элемента descendant"
+      tags:
+      - AddressInfo
+  /api/spas/v2.0/HasDescendants:
+    get:
+      parameters:
+      - description: ""
+        explode: true
+        in: query
+        name: parent
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: ""
+        explode: true
+        in: query
+        name: up_to_level
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - description: ""
+        explode: true
+        in: query
+        name: address_type
+        required: false
+        schema:
+          $ref: '#/components/schemas/AddressType'
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: "Проверка, имеет ли элемент parent дочерние элементы до уровня up_to_level"
+      tags:
+      - AddressInfo
+  /api/spas/v2.0/GetAddressItemById:
+    get:
+      parameters:
+      - description: ""
+        explode: true
+        in: query
+        name: object_id
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: ""
+        explode: true
+        in: query
+        name: address_type
+        required: false
+        schema:
+          $ref: '#/components/schemas/AddressType'
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressesResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Получение адресного элемента по идентификатору
+      tags:
+      - AddressInfo
+  /api/spas/v2.0/GetAddressItemByGuid:
+    get:
+      parameters:
+      - description: ""
+        explode: true
+        in: query
+        name: object_guid
+        required: false
+        schema:
+          format: uuid
+          type: string
+        style: form
+      - description: ""
+        explode: true
+        in: query
+        name: address_type
+        required: false
+        schema:
+          $ref: '#/components/schemas/AddressType'
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressesResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Получение адресного элемента по уникальному идентификатору ФИАС
+      tags:
+      - AddressInfo
+  /api/spas/v2.0/GetAddressItemByCadastralNumber:
+    get:
+      parameters:
+      - description: ""
+        explode: true
+        in: query
+        name: cadastral_number
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: ""
+        explode: true
+        in: query
+        name: address_type
+        required: false
+        schema:
+          $ref: '#/components/schemas/AddressType'
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressesResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Получение адресного элемента по кадастровому номеру
+      tags:
+      - AddressInfo
+  /api/spas/v2.0/GetFiasObjectTypes:
+    get:
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FiasTypesResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Получение типов объектов ФИАС
+      tags:
+      - AddressInfo
+  /api/spas/v2.0/GetChanges:
+    get:
+      parameters:
+      - description: Дата начала поиска изменений
+        explode: true
+        in: query
+        name: startDate
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      - description: Дата кокончания поиска изменений
+        explode: true
+        in: query
+        name: endDate
+        required: false
+        schema:
+          format: date-time
+          type: string
+        style: form
+      - description: Маска для отбора изменений
+        explode: true
+        in: query
+        name: changeMask
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      - description: "Код региона, для которого происходит поиск изменений"
+        explode: true
+        in: query
+        name: regionCode
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: "Поставить задачу на получение списка адресных объектов, изменённых\
+        \ в указанный интервал времени и отобранных по критериям"
+      tags:
+      - Changes
+  /api/spas/v2.0/GetSearchTaskStatus:
+    get:
+      parameters:
+      - description: Номер задачи по поиску изменений
+        explode: true
+        in: query
+        name: taskId
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IFetchChangesTaskStatus'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Сервис для получения состояния задачи по поиску изменений
+      tags:
+      - Changes
+  /api/spas/v2.0/GetSearchResultBlock:
+    get:
+      parameters:
+      - description: Номер задачи по поиску изменений
+        explode: true
+        in: query
+        name: taskId
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      - description: Только актуальные на тек момент
+        explode: true
+        in: query
+        name: blockIndex
+        required: false
+        schema:
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IFetchChangesTaskResultBlock'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Сервис для получения типов объектов ФИАС
+      tags:
+      - Changes
+  /api/spas/v2.0/CreateConversionTask:
+    get:
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateConversionTaskResult'
+          description: Created
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Создать задачу на конвертацию адресов
+      tags:
+      - Conversion
+  /api/spas/v2.0/AddConversionData:
+    post:
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/AddConversionDataInput'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddConversionDataInput'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/AddConversionDataInput'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/AddConversionDataInput'
+        description: Входные параметры
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResult'
+          description: Accepted
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Found
+        "406":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Acceptable
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Добавить данные в задачу на конвертацию адресов
+      tags:
+      - Conversion
+  /api/spas/v2.0/StartConversionTask:
+    get:
+      parameters:
+      - description: Идентификатор задачи
+        explode: true
+        in: query
+        name: task_guid
+        required: false
+        schema:
+          format: uuid
+          type: string
+        style: form
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResult'
+          description: Accepted
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Found
+        "406":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Acceptable
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Запустить задачу на конвертацию адресов
+      tags:
+      - Conversion
+  /api/spas/v2.0/CancelConversionTask:
+    get:
+      parameters:
+      - description: Идентификатор задачи
+        explode: true
+        in: query
+        name: task_guid
+        required: false
+        schema:
+          format: uuid
+          type: string
+        style: form
+      responses:
+        "202":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResult'
+          description: Accepted
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Found
+        "406":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Acceptable
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Отменить задачу на конвертацию адресов
+      tags:
+      - Conversion
+  /api/spas/v2.0/GetConversionTaskStatus:
+    get:
+      parameters:
+      - description: Идентификатор задачи
+        explode: true
+        in: query
+        name: task_guid
+        required: false
+        schema:
+          format: uuid
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversionTaskStatusAndStatistics'
+          description: Success
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Получить статус задачи и статистику выполнения
+      tags:
+      - Conversion
+  /api/spas/v2.0/GetConvertionResultBlock:
+    get:
+      parameters:
+      - description: Идентификатор задачи
+        explode: true
+        in: query
+        name: task_guid
+        required: false
+        schema:
+          format: uuid
+          type: string
+        style: form
+      - description: Номер блока данных
+        explode: true
+        in: query
+        name: block_index
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConvertionResultBlockResult'
+          description: Success
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: "Получить блок идентификаторов адресных элементов, полученных при к\
+        онвертации"
+      tags:
+      - Conversion
+  /api/spas/v2.0/SearchByParts:
+    post:
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/StructuredAddress'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StructuredAddress'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/StructuredAddress'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/StructuredAddress'
+        description: Входные данные
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchByPartsResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Поиск объекта ФИАС по частям его адреса
+      tags:
+      - Conversion
+  /api/spas/v2.0/AddNotice:
+    post:
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/Notice'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Notice'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/Notice'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/Notice'
+        description: ""
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddNoticeResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Добавление уведомления
+      tags:
+      - Notice
+  /api/spas/v2.0/GetNoticeStatus:
+    get:
+      parameters:
+      - description: ""
+        explode: true
+        in: query
+        name: id
+        required: false
+        schema:
+          format: int64
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetNoticeStatusResult'
+          description: Success
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Получение статуса обработки уведомления
+      tags:
+      - Notice
+  /api/spas/v2.0/GetNoticeItems:
+    post:
+      requestBody:
+        content:
+          application/json-patch+json:
+            schema:
+              $ref: '#/components/schemas/NoticeFilterObject'
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NoticeFilterObject'
+          text/json:
+            schema:
+              $ref: '#/components/schemas/NoticeFilterObject'
+          application/*+json:
+            schema:
+              $ref: '#/components/schemas/NoticeFilterObject'
+        description: ""
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NoticeItemsResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Получение списка уведомлений по условию
+      tags:
+      - Notice
+  /api/spas/v2.0/SearchAddressItems:
+    get:
+      parameters:
+      - description: ""
+        explode: true
+        in: query
+        name: search_string
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: ""
+        explode: true
+        in: query
+        name: address_type
+        required: false
+        schema:
+          $ref: '#/components/schemas/AddressType'
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressesResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: "Получение адресных элементов, соответствующих заданной произвольно\
+        й строке адреса"
+      tags:
+      - Search
+  /api/spas/v2.0/GetAddressHint:
+    get:
+      parameters:
+      - description: ""
+        explode: true
+        in: query
+        name: search_string
+        required: false
+        schema:
+          type: string
+        style: form
+      - description: ""
+        explode: true
+        in: query
+        name: address_type
+        required: false
+        schema:
+          $ref: '#/components/schemas/AddressType'
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HintResult'
+          description: Success
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResult'
+          description: Server Error
+      security:
+      - master-token: []
+      summary: Сервис для организации стандартизированного ввода и поиск адреса (унифицированная
+        адресная строка)
+      tags:
+      - Search
+components:
+  schemas:
+    AddConversionDataInput:
+      additionalProperties: false
+      description: Данные для добавления в задачу на конвертацию адресов
+      example:
+        task_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        data:
+        - ext_id: ext_id
+          data_type: data_type
+        - ext_id: ext_id
+          data_type: data_type
+      properties:
+        task_guid:
+          description: Идентификатор задачи на конвертацию адресов
+          format: uuid
+          type: string
+        data:
+          description: Блок данных
+          items:
+            $ref: '#/components/schemas/ConvertionRecord'
+          nullable: true
+          type: array
+      type: object
+    AddNoticeResult:
+      additionalProperties: false
+      description: Результат возвращающий идентификатор уведомления
+      example:
+        notice_id: 0
+      properties:
+        notice_id:
+          description: Идентификатор уведомления
+          format: int64
+          type: integer
+      type: object
+    AddressDetails:
+      additionalProperties: false
+      example:
+        ifns_tfl: ifns_tfl
+        remove_cadastr: remove_cadastr
+        ifns_fl: ifns_fl
+        ifns_tul: ifns_tul
+        ifns_ul: ifns_ul
+        oktmo: oktmo
+        apart_building: apart_building
+        kladr_code: kladr_code
+        cadastral_number: cadastral_number
+        postal_code: postal_code
+        okato: okato
+        oktmo_budget: oktmo_budget
+      properties:
+        postal_code:
+          nullable: true
+          type: string
+        ifns_ul:
+          nullable: true
+          type: string
+        ifns_fl:
+          nullable: true
+          type: string
+        ifns_tul:
+          nullable: true
+          type: string
+        ifns_tfl:
+          nullable: true
+          type: string
+        okato:
+          nullable: true
+          type: string
+        oktmo:
+          nullable: true
+          type: string
+        kladr_code:
+          nullable: true
+          type: string
+        cadastral_number:
+          nullable: true
+          type: string
+        apart_building:
+          nullable: true
+          type: string
+        remove_cadastr:
+          nullable: true
+          type: string
+        oktmo_budget:
+          nullable: true
+          type: string
+      type: object
+    AddressDetailsResult:
+      additionalProperties: false
+      description: "Расширенная информация, полученная через сервис"
+      example:
+        address_details:
+          ifns_tfl: ifns_tfl
+          remove_cadastr: remove_cadastr
+          ifns_fl: ifns_fl
+          ifns_tul: ifns_tul
+          ifns_ul: ifns_ul
+          oktmo: oktmo
+          apart_building: apart_building
+          kladr_code: kladr_code
+          cadastral_number: cadastral_number
+          postal_code: postal_code
+          okato: okato
+          oktmo_budget: oktmo_budget
+      properties:
+        address_details:
+          $ref: '#/components/schemas/AddressDetails'
+      type: object
+    AddressHintItem:
+      additionalProperties: false
+      example:
+        full_name: full_name
+        full_name_html: full_name_html
+        object_id: 0
+      properties:
+        object_id:
+          format: int64
+          type: integer
+        full_name:
+          nullable: true
+          type: string
+        full_name_html:
+          nullable: true
+          type: string
+      type: object
+    AddressItem:
+      additionalProperties: false
+      example:
+        object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        path: path
+        full_name: full_name
+        is_active: true
+        address_type: null
+        object_level_id: null
+        hierarchy:
+        - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          full_name: full_name
+          object_type: object_type
+          object_level_id: null
+          full_name_short: full_name_short
+          object_id: 5
+        - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          full_name: full_name
+          object_type: object_type
+          object_level_id: null
+          full_name_short: full_name_short
+          object_id: 5
+        address_details:
+          ifns_tfl: ifns_tfl
+          remove_cadastr: remove_cadastr
+          ifns_fl: ifns_fl
+          ifns_tul: ifns_tul
+          ifns_ul: ifns_ul
+          oktmo: oktmo
+          apart_building: apart_building
+          kladr_code: kladr_code
+          cadastral_number: cadastral_number
+          postal_code: postal_code
+          okato: okato
+          oktmo_budget: oktmo_budget
+        object_id: 0
+        operation_type_id: 6
+        region_code: 1
+        successor_ref:
+          object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          object_id: 5
+      properties:
+        object_id:
+          format: int64
+          type: integer
+        object_level_id:
+          $ref: '#/components/schemas/AddressLevel'
+        operation_type_id:
+          format: int32
+          nullable: true
+          type: integer
+        object_guid:
+          format: uuid
+          type: string
+        address_type:
+          $ref: '#/components/schemas/AddressType'
+        full_name:
+          nullable: true
+          type: string
+        region_code:
+          format: int32
+          type: integer
+        is_active:
+          type: boolean
+        path:
+          nullable: true
+          type: string
+        address_details:
+          $ref: '#/components/schemas/AddressDetails'
+        successor_ref:
+          $ref: '#/components/schemas/ObjectRef'
+        hierarchy:
+          items:
+            $ref: '#/components/schemas/AddressPart'
+          nullable: true
+          type: array
+      type: object
+    AddressLevel:
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 14
+      - 17
+      format: int32
+      type: integer
+    AddressObject:
+      additionalProperties: false
+      example:
+        type_name: type_name
+        name: name
+      properties:
+        name:
+          nullable: true
+          type: string
+        type_name:
+          nullable: true
+          type: string
+      type: object
+    AddressPart:
+      additionalProperties: false
+      example:
+        object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        full_name: full_name
+        object_type: object_type
+        object_level_id: null
+        full_name_short: full_name_short
+        object_id: 5
+      properties:
+        object_id:
+          format: int64
+          type: integer
+        object_level_id:
+          $ref: '#/components/schemas/AddressLevel'
+        object_guid:
+          format: uuid
+          type: string
+        object_type:
+          nullable: true
+          readOnly: true
+          type: string
+        full_name:
+          nullable: true
+          type: string
+        full_name_short:
+          nullable: true
+          type: string
+      type: object
+    AddressType:
+      enum:
+      - 1
+      - 2
+      format: int32
+      type: integer
+    AddressesResult:
+      additionalProperties: false
+      description: "Адресные элементы, полученные через сервис"
+      example:
+        addresses:
+        - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          path: path
+          full_name: full_name
+          is_active: true
+          address_type: null
+          object_level_id: null
+          hierarchy:
+          - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            full_name: full_name
+            object_type: object_type
+            object_level_id: null
+            full_name_short: full_name_short
+            object_id: 5
+          - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            full_name: full_name
+            object_type: object_type
+            object_level_id: null
+            full_name_short: full_name_short
+            object_id: 5
+          address_details:
+            ifns_tfl: ifns_tfl
+            remove_cadastr: remove_cadastr
+            ifns_fl: ifns_fl
+            ifns_tul: ifns_tul
+            ifns_ul: ifns_ul
+            oktmo: oktmo
+            apart_building: apart_building
+            kladr_code: kladr_code
+            cadastral_number: cadastral_number
+            postal_code: postal_code
+            okato: okato
+            oktmo_budget: oktmo_budget
+          object_id: 0
+          operation_type_id: 6
+          region_code: 1
+          successor_ref:
+            object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object_id: 5
+        - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          path: path
+          full_name: full_name
+          is_active: true
+          address_type: null
+          object_level_id: null
+          hierarchy:
+          - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            full_name: full_name
+            object_type: object_type
+            object_level_id: null
+            full_name_short: full_name_short
+            object_id: 5
+          - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            full_name: full_name
+            object_type: object_type
+            object_level_id: null
+            full_name_short: full_name_short
+            object_id: 5
+          address_details:
+            ifns_tfl: ifns_tfl
+            remove_cadastr: remove_cadastr
+            ifns_fl: ifns_fl
+            ifns_tul: ifns_tul
+            ifns_ul: ifns_ul
+            oktmo: oktmo
+            apart_building: apart_building
+            kladr_code: kladr_code
+            cadastral_number: cadastral_number
+            postal_code: postal_code
+            okato: okato
+            oktmo_budget: oktmo_budget
+          object_id: 0
+          operation_type_id: 6
+          region_code: 1
+          successor_ref:
+            object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object_id: 5
+      properties:
+        addresses:
+          description: Список адресных элементов
+          items:
+            $ref: '#/components/schemas/AddressItem'
+          nullable: true
+          type: array
+      type: object
+    CheckResult:
+      additionalProperties: false
+      description: Результат проверки
+      example:
+        check: true
+      properties:
+        check:
+          description: Результат
+          type: boolean
+      type: object
+    ConversionTaskStatusAndStatistics:
+      additionalProperties: false
+      example:
+        processed: 6
+        nonconverted: 5
+        converted: 1
+        total_records: 0
+        block_count: 5
+        status: status
+      properties:
+        status:
+          nullable: true
+          type: string
+        total_records:
+          format: int64
+          type: integer
+        processed:
+          format: int64
+          type: integer
+        converted:
+          format: int64
+          type: integer
+        nonconverted:
+          format: int64
+          type: integer
+        block_count:
+          format: int64
+          type: integer
+      type: object
+    ConvertionRecord:
+      additionalProperties: false
+      example:
+        ext_id: ext_id
+        data_type: data_type
+      properties:
+        data_type:
+          nullable: true
+          readOnly: true
+          type: string
+        ext_id:
+          nullable: true
+          type: string
+      type: object
+    ConvertionResultBlockResult:
+      additionalProperties: false
+      description: Блок идентификаторов адресных элементов
+      example:
+        block:
+        - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          full_name: full_name
+          description: description
+          source:
+            ext_id: ext_id
+            data_type: data_type
+          error: error
+          object_id: 0
+        - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          full_name: full_name
+          description: description
+          source:
+            ext_id: ext_id
+            data_type: data_type
+          error: error
+          object_id: 0
+      properties:
+        block:
+          description: Блок результатов
+          items:
+            $ref: '#/components/schemas/ConvertionResultRecord'
+          nullable: true
+          type: array
+      type: object
+    ConvertionResultRecord:
+      additionalProperties: false
+      example:
+        object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        full_name: full_name
+        description: description
+        source:
+          ext_id: ext_id
+          data_type: data_type
+        error: error
+        object_id: 0
+      properties:
+        source:
+          $ref: '#/components/schemas/ConvertionRecord'
+        object_id:
+          format: int64
+          nullable: true
+          type: integer
+        object_guid:
+          format: uuid
+          nullable: true
+          type: string
+        full_name:
+          nullable: true
+          type: string
+        error:
+          nullable: true
+          type: string
+        description:
+          nullable: true
+          type: string
+      type: object
+    CreateConversionTaskResult:
+      additionalProperties: false
+      description: Результат создания задачи на конвертацию адресов
+      example:
+        task_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        task_guid:
+          description: Идентификатор задачи
+          format: uuid
+          type: string
+      type: object
+    ErrorResult:
+      additionalProperties: false
+      description: Метод выполнен с ошибкой
+      properties:
+        description:
+          description: Описание ошибки
+          nullable: true
+          type: string
+        activity_id:
+          description: Идентификатор запроса
+          nullable: true
+          readOnly: true
+          type: string
+        success:
+          description: Признак успешного выполнения
+          readOnly: true
+          type: boolean
+      type: object
+    EstateObject:
+      additionalProperties: false
+      example:
+        number: number
+        type_name: type_name
+      properties:
+        number:
+          nullable: true
+          type: string
+        type_name:
+          nullable: true
+          type: string
+      type: object
+    FiasType:
+      additionalProperties: false
+      example:
+        end_date: 2000-01-23T04:56:07.000+00:00
+        type_name: type_name
+        is_active: true
+        type_short_name: type_short_name
+        description: description
+        id: 0
+        address_level: null
+        form_code: form_code
+        start_date: 2000-01-23T04:56:07.000+00:00
+      properties:
+        id:
+          format: int64
+          type: integer
+        address_level:
+          $ref: '#/components/schemas/AddressLevel'
+        type_short_name:
+          nullable: true
+          type: string
+        type_name:
+          nullable: true
+          type: string
+        description:
+          nullable: true
+          type: string
+        is_active:
+          type: boolean
+        form_code:
+          nullable: true
+          type: string
+        start_date:
+          format: date-time
+          nullable: true
+          type: string
+        end_date:
+          format: date-time
+          nullable: true
+          type: string
+      type: object
+    FiasTypesResult:
+      additionalProperties: false
+      description: Типы ФИАС
+      example:
+        types:
+        - end_date: 2000-01-23T04:56:07.000+00:00
+          type_name: type_name
+          is_active: true
+          type_short_name: type_short_name
+          description: description
+          id: 0
+          address_level: null
+          form_code: form_code
+          start_date: 2000-01-23T04:56:07.000+00:00
+        - end_date: 2000-01-23T04:56:07.000+00:00
+          type_name: type_name
+          is_active: true
+          type_short_name: type_short_name
+          description: description
+          id: 0
+          address_level: null
+          form_code: form_code
+          start_date: 2000-01-23T04:56:07.000+00:00
+      properties:
+        types:
+          description: Список типов ФИАС
+          items:
+            $ref: '#/components/schemas/FiasType'
+          nullable: true
+          type: array
+      type: object
+    FilterObject:
+      additionalProperties: false
+      example:
+        include_descendants: true
+        path: path
+        address_type: null
+        address_level: null
+        address_levels:
+        - null
+        - null
+        name_part: name_part
+      properties:
+        path:
+          nullable: true
+          type: string
+        address_level:
+          $ref: '#/components/schemas/AddressLevel'
+        address_levels:
+          items:
+            $ref: '#/components/schemas/AddressLevel'
+          nullable: true
+          type: array
+        name_part:
+          nullable: true
+          type: string
+        address_type:
+          $ref: '#/components/schemas/AddressType'
+        include_descendants:
+          type: boolean
+      type: object
+    GetNoticeStatusResult:
+      additionalProperties: false
+      description: Результат возвращающий идентификатор уведомления
+      example:
+        object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        error_message: error_message
+        status_date: 2000-01-23T04:56:07.000+00:00
+        error_code: 1
+        object_id: 6
+        request_id: request_id
+        status: 0
+      properties:
+        status:
+          description: статус обработки уведомления
+          format: int32
+          type: integer
+        status_date:
+          description: дата обработки уведомления
+          format: date-time
+          type: string
+        object_id:
+          description: идентификатор ФИАС
+          format: int64
+          nullable: true
+          type: integer
+        object_guid:
+          description: идентификатор ФИАС
+          format: uuid
+          nullable: true
+          type: string
+        error_code:
+          description: код ошибки
+          format: int32
+          nullable: true
+          type: integer
+        error_message:
+          description: сообщение об ошибке
+          nullable: true
+          type: string
+        request_id:
+          description: Идентификатор запроса
+          nullable: true
+          type: string
+      type: object
+    HintResult:
+      additionalProperties: false
+      description: "Подсказки для поиска, полученые от сервиса"
+      example:
+        hints:
+        - full_name: full_name
+          full_name_html: full_name_html
+          object_id: 0
+        - full_name: full_name
+          full_name_html: full_name_html
+          object_id: 0
+      properties:
+        hints:
+          description: Список подсказок для поиска
+          items:
+            $ref: '#/components/schemas/AddressHintItem'
+          nullable: true
+          type: array
+      type: object
+    IFetchChangesTaskResultBlock:
+      additionalProperties: false
+      example:
+        block:
+        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        - 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      properties:
+        block:
+          items:
+            format: uuid
+            type: string
+          nullable: true
+          readOnly: true
+          type: array
+      type: object
+    IFetchChangesTaskStatus:
+      additionalProperties: false
+      example:
+        blockCount: 0
+        completed: true
+      properties:
+        completed:
+          readOnly: true
+          type: boolean
+        blockCount:
+          format: int32
+          readOnly: true
+          type: integer
+      type: object
+    IdResult:
+      additionalProperties: false
+      example:
+        id: 0
+      properties:
+        id:
+          format: int64
+          type: integer
+      type: object
+    Notice:
+      additionalProperties: false
+      example:
+        address:
+          full_name: full_name
+          address:
+            city:
+              type_name: type_name
+              name: name
+            object_level_id: null
+            house:
+              number: number
+              type_name: type_name
+            building:
+              number: number
+              type_name: type_name
+            settlement:
+              type_name: type_name
+              name: name
+            city_settlement:
+              type_name: type_name
+              name: name
+            street:
+              type_name: type_name
+              name: name
+            flat:
+              number: number
+              type_name: type_name
+            district:
+              type_name: type_name
+              name: name
+            kladr_code: kladr_code
+            planning_structure:
+              type_name: type_name
+              name: name
+            region:
+              type_name: type_name
+              name: name
+            postal_code: postal_code
+          oktmo: oktmo
+          address_type: null
+          cadastral_number: cadastral_number
+          region_code: region_code
+        request_date: 2000-01-23T04:56:07.000+00:00
+        sender_name: sender_name
+        source_type: null
+        sender_code: sender_code
+        request_id: request_id
+        notice_type: null
+      properties:
+        sender_code:
+          nullable: true
+          type: string
+        sender_name:
+          nullable: true
+          type: string
+        notice_type:
+          $ref: '#/components/schemas/NoticeType'
+        source_type:
+          $ref: '#/components/schemas/NoticeSourceType'
+        request_id:
+          nullable: true
+          type: string
+        request_date:
+          format: date-time
+          type: string
+        address:
+          $ref: '#/components/schemas/NoticeAddress'
+      type: object
+    NoticeAddress:
+      additionalProperties: false
+      example:
+        full_name: full_name
+        address:
+          city:
+            type_name: type_name
+            name: name
+          object_level_id: null
+          house:
+            number: number
+            type_name: type_name
+          building:
+            number: number
+            type_name: type_name
+          settlement:
+            type_name: type_name
+            name: name
+          city_settlement:
+            type_name: type_name
+            name: name
+          street:
+            type_name: type_name
+            name: name
+          flat:
+            number: number
+            type_name: type_name
+          district:
+            type_name: type_name
+            name: name
+          kladr_code: kladr_code
+          planning_structure:
+            type_name: type_name
+            name: name
+          region:
+            type_name: type_name
+            name: name
+          postal_code: postal_code
+        oktmo: oktmo
+        address_type: null
+        cadastral_number: cadastral_number
+        region_code: region_code
+      properties:
+        full_name:
+          nullable: true
+          type: string
+        oktmo:
+          nullable: true
+          type: string
+        region_code:
+          nullable: true
+          type: string
+        cadastral_number:
+          nullable: true
+          type: string
+        address_type:
+          $ref: '#/components/schemas/AddressType'
+        address:
+          $ref: '#/components/schemas/StructuredAddress'
+      type: object
+    NoticeFilterObject:
+      additionalProperties: false
+      example:
+        end_date: 2000-01-23T04:56:07.000+00:00
+        parent_object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        sender_code: sender_code
+        request_id: request_id
+        start_date: 2000-01-23T04:56:07.000+00:00
+        status: 0
+      properties:
+        sender_code:
+          nullable: true
+          type: string
+        request_id:
+          nullable: true
+          type: string
+        start_date:
+          format: date-time
+          nullable: true
+          type: string
+        end_date:
+          format: date-time
+          nullable: true
+          type: string
+        status:
+          format: int32
+          nullable: true
+          type: integer
+        parent_object_guid:
+          format: uuid
+          nullable: true
+          type: string
+      type: object
+    NoticeItem:
+      additionalProperties: false
+      example:
+        status_date: 2000-01-23T04:56:07.000+00:00
+        notice_id: 0
+        status: 6
+        notice:
+          address:
+            full_name: full_name
+            address:
+              city:
+                type_name: type_name
+                name: name
+              object_level_id: null
+              house:
+                number: number
+                type_name: type_name
+              building:
+                number: number
+                type_name: type_name
+              settlement:
+                type_name: type_name
+                name: name
+              city_settlement:
+                type_name: type_name
+                name: name
+              street:
+                type_name: type_name
+                name: name
+              flat:
+                number: number
+                type_name: type_name
+              district:
+                type_name: type_name
+                name: name
+              kladr_code: kladr_code
+              planning_structure:
+                type_name: type_name
+                name: name
+              region:
+                type_name: type_name
+                name: name
+              postal_code: postal_code
+            oktmo: oktmo
+            address_type: null
+            cadastral_number: cadastral_number
+            region_code: region_code
+          request_date: 2000-01-23T04:56:07.000+00:00
+          sender_name: sender_name
+          source_type: null
+          sender_code: sender_code
+          request_id: request_id
+          notice_type: null
+      properties:
+        notice_id:
+          format: int64
+          type: integer
+        status:
+          format: int32
+          type: integer
+        status_date:
+          format: date-time
+          type: string
+        notice:
+          $ref: '#/components/schemas/Notice'
+      type: object
+    NoticeItemsResult:
+      additionalProperties: false
+      description: Результат возвращающий идентификатор уведомления
+      example:
+        notices:
+        - status_date: 2000-01-23T04:56:07.000+00:00
+          notice_id: 0
+          status: 6
+          notice:
+            address:
+              full_name: full_name
+              address:
+                city:
+                  type_name: type_name
+                  name: name
+                object_level_id: null
+                house:
+                  number: number
+                  type_name: type_name
+                building:
+                  number: number
+                  type_name: type_name
+                settlement:
+                  type_name: type_name
+                  name: name
+                city_settlement:
+                  type_name: type_name
+                  name: name
+                street:
+                  type_name: type_name
+                  name: name
+                flat:
+                  number: number
+                  type_name: type_name
+                district:
+                  type_name: type_name
+                  name: name
+                kladr_code: kladr_code
+                planning_structure:
+                  type_name: type_name
+                  name: name
+                region:
+                  type_name: type_name
+                  name: name
+                postal_code: postal_code
+              oktmo: oktmo
+              address_type: null
+              cadastral_number: cadastral_number
+              region_code: region_code
+            request_date: 2000-01-23T04:56:07.000+00:00
+            sender_name: sender_name
+            source_type: null
+            sender_code: sender_code
+            request_id: request_id
+            notice_type: null
+        - status_date: 2000-01-23T04:56:07.000+00:00
+          notice_id: 0
+          status: 6
+          notice:
+            address:
+              full_name: full_name
+              address:
+                city:
+                  type_name: type_name
+                  name: name
+                object_level_id: null
+                house:
+                  number: number
+                  type_name: type_name
+                building:
+                  number: number
+                  type_name: type_name
+                settlement:
+                  type_name: type_name
+                  name: name
+                city_settlement:
+                  type_name: type_name
+                  name: name
+                street:
+                  type_name: type_name
+                  name: name
+                flat:
+                  number: number
+                  type_name: type_name
+                district:
+                  type_name: type_name
+                  name: name
+                kladr_code: kladr_code
+                planning_structure:
+                  type_name: type_name
+                  name: name
+                region:
+                  type_name: type_name
+                  name: name
+                postal_code: postal_code
+              oktmo: oktmo
+              address_type: null
+              cadastral_number: cadastral_number
+              region_code: region_code
+            request_date: 2000-01-23T04:56:07.000+00:00
+            sender_name: sender_name
+            source_type: null
+            sender_code: sender_code
+            request_id: request_id
+            notice_type: null
+      properties:
+        notices:
+          description: Список уведомлений
+          items:
+            $ref: '#/components/schemas/NoticeItem'
+          nullable: true
+          type: array
+      type: object
+    NoticeSourceType:
+      enum:
+      - 0
+      - 1
+      format: int32
+      type: integer
+    NoticeType:
+      enum:
+      - 1
+      - 2
+      format: int32
+      type: integer
+    ObjectRef:
+      additionalProperties: false
+      example:
+        object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        object_id: 5
+      properties:
+        object_id:
+          format: int64
+          type: integer
+        object_guid:
+          format: uuid
+          type: string
+      type: object
+    SearchByPartsResult:
+      additionalProperties: false
+      example:
+        last_found_item:
+          object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          path: path
+          full_name: full_name
+          is_active: true
+          address_type: null
+          object_level_id: null
+          hierarchy:
+          - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            full_name: full_name
+            object_type: object_type
+            object_level_id: null
+            full_name_short: full_name_short
+            object_id: 5
+          - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            full_name: full_name
+            object_type: object_type
+            object_level_id: null
+            full_name_short: full_name_short
+            object_id: 5
+          address_details:
+            ifns_tfl: ifns_tfl
+            remove_cadastr: remove_cadastr
+            ifns_fl: ifns_fl
+            ifns_tul: ifns_tul
+            ifns_ul: ifns_ul
+            oktmo: oktmo
+            apart_building: apart_building
+            kladr_code: kladr_code
+            cadastral_number: cadastral_number
+            postal_code: postal_code
+            okato: okato
+            oktmo_budget: oktmo_budget
+          object_id: 0
+          operation_type_id: 6
+          region_code: 1
+          successor_ref:
+            object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object_id: 5
+        address_item:
+          object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+          path: path
+          full_name: full_name
+          is_active: true
+          address_type: null
+          object_level_id: null
+          hierarchy:
+          - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            full_name: full_name
+            object_type: object_type
+            object_level_id: null
+            full_name_short: full_name_short
+            object_id: 5
+          - object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            full_name: full_name
+            object_type: object_type
+            object_level_id: null
+            full_name_short: full_name_short
+            object_id: 5
+          address_details:
+            ifns_tfl: ifns_tfl
+            remove_cadastr: remove_cadastr
+            ifns_fl: ifns_fl
+            ifns_tul: ifns_tul
+            ifns_ul: ifns_ul
+            oktmo: oktmo
+            apart_building: apart_building
+            kladr_code: kladr_code
+            cadastral_number: cadastral_number
+            postal_code: postal_code
+            okato: okato
+            oktmo_budget: oktmo_budget
+          object_id: 0
+          operation_type_id: 6
+          region_code: 1
+          successor_ref:
+            object_guid: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+            object_id: 5
+        description: description
+        error: error
+      properties:
+        error:
+          nullable: true
+          type: string
+        description:
+          nullable: true
+          type: string
+        address_item:
+          $ref: '#/components/schemas/AddressItem'
+        last_found_item:
+          $ref: '#/components/schemas/AddressItem'
+      type: object
+    StructuredAddress:
+      additionalProperties: false
+      example:
+        city:
+          type_name: type_name
+          name: name
+        object_level_id: null
+        house:
+          number: number
+          type_name: type_name
+        building:
+          number: number
+          type_name: type_name
+        settlement:
+          type_name: type_name
+          name: name
+        city_settlement:
+          type_name: type_name
+          name: name
+        street:
+          type_name: type_name
+          name: name
+        flat:
+          number: number
+          type_name: type_name
+        district:
+          type_name: type_name
+          name: name
+        kladr_code: kladr_code
+        planning_structure:
+          type_name: type_name
+          name: name
+        region:
+          type_name: type_name
+          name: name
+        postal_code: postal_code
+      properties:
+        region:
+          $ref: '#/components/schemas/AddressObject'
+        district:
+          $ref: '#/components/schemas/AddressObject'
+        city_settlement:
+          $ref: '#/components/schemas/AddressObject'
+        city:
+          $ref: '#/components/schemas/AddressObject'
+        settlement:
+          $ref: '#/components/schemas/AddressObject'
+        street:
+          $ref: '#/components/schemas/AddressObject'
+        planning_structure:
+          $ref: '#/components/schemas/AddressObject'
+        house:
+          $ref: '#/components/schemas/EstateObject'
+        building:
+          $ref: '#/components/schemas/EstateObject'
+        flat:
+          $ref: '#/components/schemas/EstateObject'
+        postal_code:
+          nullable: true
+          type: string
+        kladr_code:
+          nullable: true
+          type: string
+        object_level_id:
+          $ref: '#/components/schemas/AddressLevel'
+      type: object
+    SuccessResult:
+      additionalProperties: false
+      description: Метод успешно выполнен
+      example:
+        success: true
+      properties:
+        success:
+          description: Признак успешного выполнения
+          readOnly: true
+          type: boolean
+      type: object
+  securitySchemes:
+    master-token:
+      description: Авторизация по ключу приложения
+      in: header
+      name: master-token
+      type: apiKey
+
